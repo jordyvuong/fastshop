@@ -39,7 +39,7 @@ export default [
     },
   },
   {
-    files: ['**/*.test.{js,jsx}', '**/*.spec.{js,jsx}'],
+    files: ['**/*.test.{js,jsx}', '**/*.spec.{js,jsx}', '**/jest.setup.js', '**/jest.config.js'],
     languageOptions: {
       globals: {
         ...globals.jest,
