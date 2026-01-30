@@ -27,8 +27,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npm run lint
-        working-directory: services/product-service
+        run: npm run lint --workspace=services/product-service
 
   tests:
     name: Tests
@@ -71,8 +70,7 @@ jobs:
           DATABASE_URL: postgresql://testuser:testpass@localhost:5432/products_test
 
       - name: Run tests
-        run: npm test
-        working-directory: services/product-service
+        run: npm test --workspace=services/product-service
         env:
           DATABASE_URL: postgresql://testuser:testpass@localhost:5432/products_test
 
