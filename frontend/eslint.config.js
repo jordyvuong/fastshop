@@ -46,4 +46,12 @@ export default [
       },
     },
   },
+  {
+    files: ['jest.setup.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+  },
 ];
