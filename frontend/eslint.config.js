@@ -27,10 +27,22 @@ export default [
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
+      'no-unused-vars': ['error', {
+        varsIgnorePattern: '^(React|StrictMode|App)$',
+        argsIgnorePattern: '^_'
+      }],
     },
     settings: {
       react: {
         version: 'detect',
+      },
+    },
+  },
+  {
+    files: ['**/*.test.{js,jsx}', '**/*.spec.{js,jsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
       },
     },
   },
