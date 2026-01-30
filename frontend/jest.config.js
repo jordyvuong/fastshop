@@ -12,5 +12,12 @@ export default {
     'src/**/*.{js,jsx}',
     '!src/**/*.test.{js,jsx}',
     '!src/main.jsx'
-  ]
+  ],
+  globals: {
+    'import.meta': {
+      env: {
+        VITE_API_URL: 'http://localhost:3000'
+      }
+    }
+  }
 };
