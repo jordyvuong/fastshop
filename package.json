@@ -1,27 +1,15 @@
 {
-  "name": "fastshop-monorepo",
+  "name": "fastshop",
   "version": "1.0.0",
-  "description": "FastShop - Architecture microservices en mono-repo",
+  "description": "FastShop - Microservices E-Commerce Platform",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "gateway",
-    "services/*"
-  ],
   "scripts": {
-    "install:all": "npm install",
-    "dev": "npm run dev:gateway & npm run dev:services & npm run dev:frontend",
-    "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:gateway": "npm run dev --workspace=gateway",
-    "dev:services": "npm run dev --workspace=services/product-service & npm run dev --workspace=services/order-service",
-    "build:frontend": "npm run build --workspace=frontend",
-    "start:gateway": "npm start --workspace=gateway",
-    "start:services": "npm start --workspace=services/product-service & npm start --workspace=services/order-service"
+    "install:all": "npm install && cd services/product-service && npm install && cd ../order-service && npm install && cd ../../gateway && npm install && cd ../frontend && npm install",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
   },
-  "keywords": ["monorepo", "microservices", "react", "express"],
+  "keywords": ["microservices", "react", "express", "docker"],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "concurrently": "^9.1.2"
-  }
+  "license": "ISC"
 }
