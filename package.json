@@ -1,0 +1,27 @@
+{
+  "name": "fastshop-monorepo",
+  "version": "1.0.0",
+  "description": "FastShop - Architecture microservices en mono-repo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "gateway",
+    "services/*"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev": "npm run dev:gateway & npm run dev:services & npm run dev:frontend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:gateway": "npm run dev --workspace=gateway",
+    "dev:services": "npm run dev --workspace=services/users & npm run dev --workspace=services/products",
+    "build:frontend": "npm run build --workspace=frontend",
+    "start:gateway": "npm start --workspace=gateway",
+    "start:services": "npm start --workspace=services/users & npm start --workspace=services/products"
+  },
+  "keywords": ["monorepo", "microservices", "react", "express"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
