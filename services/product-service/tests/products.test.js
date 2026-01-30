@@ -2,6 +2,13 @@ const request = require('supertest');
 const app = require('../src/index');
 
 describe('Product Service', () => {
+  afterAll(async () => {
+    // Close server and Prisma connection
+    const server = app.locals.server;
+    if (server) {
+      await new Promise(resolve => server.close(resolve));
+    }
+  });
   describe('GET /health', () => {
     it('should return health status', async () => {
       const res = await request(app).get('/health');

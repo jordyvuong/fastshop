@@ -41,15 +41,21 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`API Gateway running on port ${PORT}`);
-});
-
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, closing server...');
-  server.close(() => {
-    process.exit(0);
+// Only start server if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+  const server = app.listen(PORT, () => {
+    console.log(`API Gateway running on port ${PORT}`);
   });
-});
+
+  // Store server for cleanup
+  app.locals.server = server;
+
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, closing server...');
+    server.close(() => {
+      process.exit(0);
+    });
+  });
+}
 
 module.exports = app;

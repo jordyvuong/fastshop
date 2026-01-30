@@ -60,17 +60,23 @@ app.post('/orders', async (req, res) => {
   }
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Order Service running on port ${PORT}`);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, closing server...');
-  server.close(async () => {
-    await prisma.$disconnect();
-    process.exit(0);
+// Only start server if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+  const server = app.listen(PORT, () => {
+    console.log(`Order Service running on port ${PORT}`);
   });
-});
+
+  // Store server for cleanup
+  app.locals.server = server;
+
+  // Graceful shutdown
+  process.on('SIGTERM', async () => {
+    console.log('SIGTERM received, closing server...');
+    server.close(async () => {
+      await prisma.$disconnect();
+      process.exit(0);
+    });
+  });
+}
 
 module.exports = app;
