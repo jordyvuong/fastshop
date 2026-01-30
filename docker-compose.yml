@@ -1,0 +1,103 @@
+services:
+  # PostgreSQL for Product Service
+  product-db:
+    image: postgres:16-alpine
+    container_name: fastshop-product-db
+    environment:
+      POSTGRES_USER: product_user
+      POSTGRES_PASSWORD: product_pass
+      POSTGRES_DB: products
+    ports:
+      - "5432:5432"
+    volumes:
+      - product-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U product_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL for Order Service
+  order-db:
+    image: postgres:16-alpine
+    container_name: fastshop-order-db
+    environment:
+      POSTGRES_USER: order_user
+      POSTGRES_PASSWORD: order_pass
+      POSTGRES_DB: orders
+    ports:
+      - "5433:5432"
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Product Service
+  product-service:
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile
+    container_name: fastshop-product-service
+    environment:
+      DATABASE_URL: postgresql://product_user:product_pass@product-db:5432/products
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      product-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Order Service
+  order-service:
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    container_name: fastshop-order-service
+    environment:
+      DATABASE_URL: postgresql://order_user:order_pass@order-db:5432/orders
+      PORT: 3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      order-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: fastshop-api-gateway
+    environment:
+      PORT: 3000
+      PRODUCT_SERVICE_URL: http://product-service:3001
+      ORDER_SERVICE_URL: http://order-service:3002
+    ports:
+      - "3000:3000"
+    depends_on:
+      - product-service
+      - order-service
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fastshop-frontend
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "80:80"
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+
+volumes:
+  product-db-data:
+  order-db-data:

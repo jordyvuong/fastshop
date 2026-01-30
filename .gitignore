@@ -39,3 +39,11 @@ Thumbs.db
 *.tmp
 tmp/
 temp/
+
+# Coverage
+coverage/
+*.lcov
+
+# Docker
+*.env.docker
+docker-compose.override.yml
