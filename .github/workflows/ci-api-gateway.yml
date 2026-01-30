@@ -1,18 +1,18 @@
-name: CI - Product Service
+name: CI - API Gateway
 
 on:
   push:
     paths:
-      - 'services/product-service/**'
-      - '.github/workflows/ci-product-service.yml'
+      - 'gateway/**'
+      - '.github/workflows/ci-api-gateway.yml'
   pull_request:
     paths:
-      - 'services/product-service/**'
-      - '.github/workflows/ci-product-service.yml'
+      - 'gateway/**'
+      - '.github/workflows/ci-api-gateway.yml'
 
 defaults:
   run:
-    working-directory: services/product-service
+    working-directory: gateway
 
 jobs:
   lint:
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: services/product-service/package-lock.json
+          cache-dependency-path: gateway/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -38,21 +38,6 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: products_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -62,23 +47,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: services/product-service/package-lock.json
+          cache-dependency-path: gateway/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate Prisma Client
-        run: npx prisma generate
-
-      - name: Run migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/products_test
-
       - name: Run tests
         run: npm test
-        env:
-          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/products_test
 
   security:
     name: Security Scan
@@ -113,17 +88,18 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./services/product-service
+          context: ./gateway
           load: true
-          tags: product-service:test
+          tags: api-gateway:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Test Docker image
         run: |
-          docker run -d --name test-product-service \
-            -e DATABASE_URL="postgresql://test:test@localhost:5432/test" \
-            product-service:test
+          docker run -d --name test-api-gateway \
+            -e PRODUCT_SERVICE_URL="http://localhost:3001" \
+            -e ORDER_SERVICE_URL="http://localhost:3002" \
+            api-gateway:test
           sleep 5
-          docker logs test-product-service
-          docker stop test-product-service
+          docker logs test-api-gateway
+          docker stop test-api-gateway

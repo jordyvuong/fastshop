@@ -1,18 +1,18 @@
-name: CI - Product Service
+name: CI - Order Service
 
 on:
   push:
     paths:
-      - 'services/product-service/**'
-      - '.github/workflows/ci-product-service.yml'
+      - 'services/order-service/**'
+      - '.github/workflows/ci-order-service.yml'
   pull_request:
     paths:
-      - 'services/product-service/**'
-      - '.github/workflows/ci-product-service.yml'
+      - 'services/order-service/**'
+      - '.github/workflows/ci-order-service.yml'
 
 defaults:
   run:
-    working-directory: services/product-service
+    working-directory: services/order-service
 
 jobs:
   lint:
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: services/product-service/package-lock.json
+          cache-dependency-path: services/order-service/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -44,7 +44,7 @@ jobs:
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: products_test
+          POSTGRES_DB: orders_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -62,7 +62,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: services/product-service/package-lock.json
+          cache-dependency-path: services/order-service/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -73,12 +73,12 @@ jobs:
       - name: Run migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/products_test
+          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/orders_test
 
       - name: Run tests
         run: npm test
         env:
-          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/products_test
+          DATABASE_URL: postgresql://testuser:testpass@localhost:5432/orders_test
 
   security:
     name: Security Scan
@@ -113,17 +113,17 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./services/product-service
+          context: ./services/order-service
           load: true
-          tags: product-service:test
+          tags: order-service:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Test Docker image
         run: |
-          docker run -d --name test-product-service \
+          docker run -d --name test-order-service \
             -e DATABASE_URL="postgresql://test:test@localhost:5432/test" \
-            product-service:test
+            order-service:test
           sleep 5
-          docker logs test-product-service
-          docker stop test-product-service
+          docker logs test-order-service
+          docker stop test-order-service
