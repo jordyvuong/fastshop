@@ -11,13 +11,7 @@ export default {
   collectCoverageFrom: [
     'src/**/*.{js,jsx}',
     '!src/**/*.test.{js,jsx}',
-    '!src/main.jsx'
-  ],
-  globals: {
-    'import.meta': {
-      env: {
-        VITE_API_URL: 'http://localhost:3000'
-      }
-    }
-  }
+    '!src/main.jsx',
+    '!src/config.js'
+  ]
 };
