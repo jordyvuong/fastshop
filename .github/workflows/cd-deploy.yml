@@ -30,7 +30,7 @@ jobs:
         working-directory: ${{ github.event.inputs.service == 'api-gateway' && 'gateway' || (github.event.inputs.service == 'product-service' || github.event.inputs.service == 'order-service') && format('services/{0}', github.event.inputs.service) || github.event.inputs.service }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -77,7 +77,7 @@ jobs:
         working-directory: ${{ github.event.inputs.service == 'api-gateway' && 'gateway' || (github.event.inputs.service == 'product-service' || github.event.inputs.service == 'order-service') && format('services/{0}', github.event.inputs.service) || github.event.inputs.service }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -135,7 +135,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -175,7 +175,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create Release
         uses: actions/create-release@v1
