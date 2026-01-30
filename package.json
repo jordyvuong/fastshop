@@ -13,10 +13,10 @@
     "dev": "npm run dev:gateway & npm run dev:services & npm run dev:frontend",
     "dev:frontend": "npm run dev --workspace=frontend",
     "dev:gateway": "npm run dev --workspace=gateway",
-    "dev:services": "npm run dev --workspace=services/users & npm run dev --workspace=services/products",
+    "dev:services": "npm run dev --workspace=services/product-service & npm run dev --workspace=services/order-service",
     "build:frontend": "npm run build --workspace=frontend",
     "start:gateway": "npm start --workspace=gateway",
-    "start:services": "npm start --workspace=services/users & npm start --workspace=services/products"
+    "start:services": "npm start --workspace=services/product-service & npm start --workspace=services/order-service"
   },
   "keywords": ["monorepo", "microservices", "react", "express"],
   "author": "",
