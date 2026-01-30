@@ -158,7 +158,7 @@ jobs:
             type=sha,prefix=
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ${{ github.event.inputs.service == 'api-gateway' && './gateway' || (github.event.inputs.service == 'product-service' || github.event.inputs.service == 'order-service') && format('./services/{0}', github.event.inputs.service) || format('./{0}', github.event.inputs.service) }}
           push: true
